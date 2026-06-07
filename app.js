@@ -293,7 +293,12 @@ let layoutRadius = 40;
 // =============================================================================
 function initThree() {
   const canvas = document.getElementById('scene');
-  renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  renderer = new THREE.WebGLRenderer({
+    canvas,
+    antialias: true,
+    alpha: true,
+    preserveDrawingBuffer: true, // lets the canvas be captured (toDataURL / screenshots)
+  });
   renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
   scene = new THREE.Scene();
   cam = new THREE.OrthographicCamera(0, 1, 1, 0, -2000, 2000);
@@ -478,7 +483,7 @@ async function initCamera() {
     await video.play();
   } catch (e) {
     showStatus(
-      '<span class="warn">Sin cámara.</span> El grafo igual funciona, centrado.<br><span style="color:#8fa3b0">Concede permiso de cámara y recarga para ver tu cara.</span>',
+      '<span class="warn">No camera.</span> The graph still works, centered.<br><span style="color:#8fa3b0">Allow camera access and reload to see your face.</span>',
       4000
     );
     return false;
@@ -501,7 +506,7 @@ async function initCamera() {
     });
   } catch (e) {
     showStatus(
-      '<span class="warn">No cargó un modelo de MediaPipe</span> (¿sin internet?).<br>El grafo sigue funcionando.',
+      '<span class="warn">A MediaPipe model failed to load</span> (offline?).<br>The graph still works.',
       4000
     );
     if (!landmarker) landmarker = null;
@@ -828,8 +833,8 @@ function tick(t) {
     const nHands = hands.filter((h) => h.present).length;
     const ph = hands.find((h) => h.present);
     let tag = `${fps} fps`;
-    if (hasFace) tag += ' · cara ✓';
-    if (nHands) tag += ` · ${nHands} mano${nHands > 1 ? 's' : ''}`;
+    if (hasFace) tag += ' · face ✓';
+    if (nHands) tag += ` · ${nHands} hand${nHands > 1 ? 's' : ''}`;
     if (nPinch) tag += ` · pinch ✊×${nPinch}`;
     if (ph) tag += ` · r=${ph.ratio.toFixed(2)}`; // ratio de pinch en vivo (para calibrar)
     document.getElementById('sFps').textContent = tag;
@@ -1288,10 +1293,10 @@ function updateHoverInfo() {
   if (!el) return;
   if (hv >= 0) {
     const n = G.nodes[hv];
-    const sel = hv === S.pinned ? ' · <span style="color:#35f0ff">● seleccionada</span>' : '';
+    const sel = hv === S.pinned ? ' · <span style="color:#35f0ff">● selected</span>' : '';
     el.innerHTML = `▸ <b>${n.title}</b> · ${n.folder}${
-      n.ghost ? ' · <span style="color:#9fb3c0">(sin archivo)</span>' : ''
-    } · ${n.degree} conexiones${sel}`;
+      n.ghost ? ' · <span style="color:#9fb3c0">(no file)</span>' : ''
+    } · ${n.degree} connections${sel}`;
   } else {
     el.textContent = '';
   }
@@ -1333,13 +1338,13 @@ function updatePinchReadout() {
       open = h.open || 0;
     let tag, col;
     if (h.pinch) {
-      tag = 'PINCH→mover';
+      tag = 'PINCH → move';
       col = '#ff7a3d';
     } else if (fist > 0.55 && h.ratio > 0.28) {
-      tag = 'PUÑO→supernova';
+      tag = 'FIST → supernova';
       col = '#ffd24a';
     } else if (open > 0.5) {
-      tag = 'ABIERTA→expande';
+      tag = 'OPEN → expand';
       col = '#8effa6';
     } else {
       tag = '—';
@@ -1417,7 +1422,7 @@ function hideStatus() {
     initThree();
     initInteraction();
     showStatus(
-      'Concede la cámara. <b>Apunta</b> con el índice para resaltar una memoria · <b>pellizca</b> (pinch) sobre ella para seleccionarla, o en vacío para mover el holograma.',
+      'Allow the camera. <b>Point</b> your index finger to highlight a memory · <b>pinch</b> it to select, or pinch empty space to move the hologram.',
       0
     );
     requestAnimationFrame(tick); // arranca el render (el grafo ya florece)

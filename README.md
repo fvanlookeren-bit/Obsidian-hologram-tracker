@@ -10,6 +10,11 @@ backend — open one local page and your second brain is in the air in front of 
 > Inspired by the "Topologies of Thoughts" idea: a graph where nodes are notes
 > and edges are labelled by how the ideas connect.
 
+![Topologies of Thought — an Obsidian vault rendered as a holographic neural graph](docs/hero.jpg)
+
+> _Above: the bundled demo vault. With a webcam, the whole constellation anchors to
+> your face and you move it with your hands._
+
 ---
 
 ## What it does
@@ -40,7 +45,8 @@ python3 serve.py 8123          # any static server over http works
 > A camera needs a *secure context*, so it must be served over `http://localhost`
 > (or https). Opening `index.html` with a double-click will **not** work.
 
-> _Tip: add a screenshot or GIF here — the hologram on your face is the whole pitch._
+> _For the full effect, drop a webcam screenshot (the graph over your face) into
+> `docs/` and swap it into the image at the top — that's the real pitch._
 
 ## Connect your own Obsidian vault
 
