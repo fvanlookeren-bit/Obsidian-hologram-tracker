@@ -1,0 +1,123 @@
+:root {
+  --fg: #e8eef2;
+  --mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, monospace;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  width: 100%; height: 100%;
+  background: #000; color: var(--fg);
+  font-family: var(--mono);
+  overflow: hidden;
+  cursor: crosshair;
+}
+
+#cam {
+  position: fixed; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transform: scaleX(-1);           /* espejo, como mirarte */
+  filter: brightness(0.5) contrast(1.12) saturate(0.5);
+  z-index: 0;
+}
+
+/* viñeta azulada + scanlines + tinte → aire de holograma Jarvis */
+#vignette {
+  position: fixed; inset: 0; z-index: 1; pointer-events: none;
+  background:
+    radial-gradient(ellipse at center, rgba(8,20,40,0.25) 30%, rgba(0,4,12,0.78) 100%),
+    linear-gradient(180deg, rgba(10,30,60,0.18), rgba(0,0,0,0) 30%),
+    repeating-linear-gradient(0deg, rgba(0,0,0,0) 0 2px, rgba(0,8,20,0.14) 2px 3px);
+}
+
+#scene { position: fixed; inset: 0; z-index: 2; }
+
+/* etiquetas proyectadas sobre el grafo */
+#labels { position: fixed; inset: 0; z-index: 3; pointer-events: none; }
+.lbl {
+  position: absolute; left: 0; top: 0;
+  font-size: 11px; line-height: 1.1; letter-spacing: 0.02em;
+  white-space: nowrap; transform: translate(-50%, -50%);
+  text-shadow: 0 0 4px #000, 0 0 4px #000, 0 1px 2px #000;
+  will-change: transform, opacity;
+}
+.lbl.node  { color: #eaf3f8; }
+.lbl.hub   { color: #fff; font-size: 12px; }
+/* "loud" = revelado al abrir la mano: blanco con borde negro, legible sobre todo */
+.lbl.loud {
+  color: #fff; font-weight: 600;
+  text-shadow: 0 0 2px #000, 0 0 5px #000, 1px 1px 0 #000, -1px -1px 0 #000,
+    1px -1px 0 #000, -1px 1px 0 #000;
+}
+.lbl.ghost { color: #9fb3c0; font-style: italic; }
+.lbl.edge  { color: #7fdcff; font-size: 10px; max-width: 220px; white-space: normal; text-shadow: 0 0 8px rgba(20,120,200,0.6), 0 0 2px #000; }
+.lbl.dim   { opacity: 0.0; }
+
+/* retículo "lock-on" sobre el nodo apuntado con el índice */
+#reticle {
+  position: fixed; left: 0; top: 0; z-index: 3;
+  width: 40px; height: 40px; border: 1.5px solid #35f0ff; border-radius: 50%;
+  pointer-events: none; opacity: 0;
+  box-shadow: 0 0 14px rgba(53,240,255,0.55), inset 0 0 8px rgba(53,240,255,0.3);
+  transition: opacity 0.12s ease, width 0.1s ease, height 0.1s ease;
+}
+#reticle::before, #reticle::after {
+  content: ''; position: absolute; background: currentColor; color: #35f0ff;
+}
+#reticle::before { left: 50%; top: -6px; width: 1px; height: 6px; transform: translateX(-50%); }
+#reticle::after  { top: 50%; left: -6px; height: 1px; width: 6px; transform: translateY(-50%); }
+
+/* lectura del valor de pinch (r=) pegada a los dedos, para calibrar */
+#pinchReadout, #pinchReadout2 {
+  position: fixed; left: 0; top: 0; z-index: 4; pointer-events: none;
+  font-family: var(--mono); font-size: 15px; font-weight: 600;
+  white-space: nowrap; opacity: 0;
+  text-shadow: 0 0 8px rgba(0,0,0,0.9), 0 0 3px #000;
+}
+
+/* marco HUD con esquinas (estilo Iron Man) */
+#frame {
+  position: fixed; inset: 14px; z-index: 1; pointer-events: none;
+  border: 1px solid rgba(53,240,255,0.10);
+}
+#frame::before, #frame::after {
+  content: ''; position: absolute; width: 26px; height: 26px;
+  border: 2px solid rgba(53,240,255,0.5);
+}
+#frame::before { left: -1px; top: -1px; border-right: 0; border-bottom: 0; }
+#frame::after  { right: -1px; bottom: -1px; border-left: 0; border-top: 0; }
+
+/* HUD */
+.hud { position: fixed; z-index: 4; pointer-events: none; font-size: 12px; }
+#title { top: 22px; right: 24px; text-align: right; }
+#title h1 { font-size: 15px; font-weight: 600; letter-spacing: 0.04em; color: #d8f6ff; text-shadow: 0 0 12px rgba(53,240,255,0.5); }
+#title .sub { font-size: 11px; color: #6fa8c8; margin-top: 2px; }
+#title .mode { font-size: 11px; color: #35f0ff; margin-top: 8px; text-shadow: 0 0 8px rgba(53,240,255,0.6); }
+
+#stats { left: 24px; bottom: 20px; color: #9fb3c0; line-height: 1.5; }
+#stats b { color: var(--fg); font-weight: 600; }
+
+#legend { right: 24px; bottom: 20px; text-align: right; color: #9fb3c0; line-height: 1.6; }
+#legend .row { display: flex; align-items: center; gap: 7px; justify-content: flex-end; }
+#legend .dot { width: 8px; height: 8px; border-radius: 50%; box-shadow: 0 0 6px currentColor; }
+
+#help { left: 24px; top: 22px; color: #6f8492; line-height: 1.6; }
+#help kbd {
+  font: inherit; color: var(--fg);
+  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 4px; padding: 0 5px;
+}
+
+#status {
+  position: fixed; z-index: 5; left: 50%; top: 50%;
+  transform: translate(-50%, -50%); text-align: center;
+  color: var(--fg); font-size: 13px; line-height: 1.6;
+  background: rgba(0,0,0,0.6); padding: 18px 26px; border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.12); pointer-events: none;
+  transition: opacity 0.5s; max-width: 80vw;
+}
+#status.hidden { opacity: 0; }
+#status .warn { color: #ffb24d; }
+
+.fade { transition: opacity 0.4s; }

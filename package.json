@@ -1,0 +1,31 @@
+{
+  "name": "obsidian-hologram-tracker",
+  "version": "1.0.0",
+  "description": "A Jarvis-style holographic interface for your Obsidian vault — your notes as a 3D neural network, anchored to your face and controlled with hand tracking.",
+  "type": "module",
+  "scripts": {
+    "scan": "node scan-vault.mjs",
+    "sample": "node scan-vault.mjs ./sample-vault",
+    "serve": "python3 serve.py 8123",
+    "start": "node scan-vault.mjs && python3 serve.py 8123"
+  },
+  "bin": {
+    "scan-vault": "scan-vault.mjs"
+  },
+  "keywords": [
+    "obsidian",
+    "knowledge-graph",
+    "three.js",
+    "mediapipe",
+    "hand-tracking",
+    "face-tracking",
+    "hologram",
+    "second-brain",
+    "visualization"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {}
+}

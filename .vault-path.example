@@ -1,0 +1,14 @@
+# How to point this app at YOUR Obsidian vault:
+#   1. Copy this file to ".vault-path"   (cp .vault-path.example .vault-path)
+#   2. Replace the path below with the ABSOLUTE path to your vault folder.
+#   3. Run `npm run scan` (or `node scan-vault.mjs`).
+#
+# The first non-comment line is used as the vault path. "~" is expanded to your home.
+# ".vault-path" is gitignored, so your path never gets committed.
+#
+# Examples:
+#   ~/Documents/MyVault
+#   /Users/you/Library/Mobile Documents/iCloud~md~obsidian/Documents/MyVault
+#   C:\Users\you\Documents\MyVault
+
+~/Documents/ObsidianVault

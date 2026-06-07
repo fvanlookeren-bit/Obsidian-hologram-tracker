@@ -1,0 +1,22 @@
+# --- Your private data — NEVER commit ---
+# graph.json is generated from YOUR vault (your real notes)
+graph.json
+# .vault-path holds the absolute path to your vault
+.vault-path
+_graph.private.bak
+
+# --- OS / editor ---
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+.idea/
+.vscode/
+.claude/
+
+# --- Node ---
+node_modules/
+npm-debug.log*
+
+# --- Env ---
+.env
